@@ -28,7 +28,7 @@ Unlike traditional Applicant Tracking Systems (ATS), RecruitAIr doesn't just fil
 - Python
 
 ### AI
-- Mistral (via Hugging Face Inference API)
+- Gemini via inference api keys
 
 ### Memory
 - Cognee
