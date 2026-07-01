@@ -1,0 +1,173 @@
+{
+  "name": "Byungjin Park",
+  "email": "posquit0.bj@gmail.com",
+  "phone": "(+82) 10-9030-1843",
+  "linkedin": "https://linkedin.com/in/posquit0",
+  "github": "https://github.com/posquit0",
+  "location": "Mapo-gu, Seoul, Republic of Korea",
+
+  "summary": "Seasoned DevOps Engineer, Software Architect and SRE leader with over 15 years of experience specializing in cloud infrastructure, DevOps, Site Reliability Engineering, Kubernetes, Terraform, AWS, security engineering, and scalable cloud-native architectures. Experienced in leading infrastructure teams, consulting for startups, and contributing to open-source communities.",
+
+  "skills": [
+    "AWS",
+    "Terraform",
+    "Kubernetes",
+    "Docker",
+    "GitOps",
+    "Kustomize",
+    "ArgoCD",
+    "Istio",
+    "Cilium",
+    "Consul",
+    "AWS VPC Lattice",
+    "DevOps",
+    "Site Reliability Engineering",
+    "Infrastructure as Code",
+    "Security Engineering",
+    "CircleCI",
+    "Node.js",
+    "Koa",
+    "AWS Lambda",
+    "Kafka",
+    "Elastic Stack",
+    "Elasticsearch",
+    "Kibana",
+    "Grafana",
+    "InfluxDB",
+    "Telegraf",
+    "OpenLDAP",
+    "OpenVPN",
+    "Linux",
+    "GitHub",
+    "Slack",
+    "Google Workspace",
+    "Okta",
+    "Cloud Architecture",
+    "Microservices",
+    "CI/CD",
+    "REST API",
+    "CloudWatch",
+    "Ansible",
+    "Packer",
+    "Rancher",
+    "AWS EKS",
+    "AWS Route53",
+    "AWS Direct Connect",
+    "IPSec VPN",
+    "Python"
+  ],
+
+  "education": [
+    {
+      "institution": "POSTECH (Pohang University of Science and Technology)",
+      "degree": "B.S.",
+      "field": "Computer Science and Engineering",
+      "start_date": "2010",
+      "end_date": "2017"
+    }
+  ],
+
+  "experience": [
+    {
+      "company": "Dunamu Inc.",
+      "role": "DevOps Engineer",
+      "location": "Seoul, South Korea",
+      "start_date": "Sep 2023",
+      "end_date": "Mar 2024"
+    },
+    {
+      "company": "Danggeun Pay Inc. (KarrotPay)",
+      "role": "Founding Member, Site Reliability Engineer & Infrastructure Team Lead",
+      "location": "Seoul, South Korea",
+      "start_date": "Mar 2021",
+      "end_date": "Jun 2023"
+    },
+    {
+      "company": "Danggeun Market Inc.",
+      "role": "Site Reliability Engineer",
+      "location": "Seoul, South Korea",
+      "start_date": "Feb 2021",
+      "end_date": "Mar 2021"
+    },
+    {
+      "company": "Kasa",
+      "role": "Founding Member & Director of Infrastructure Division",
+      "location": "Seoul, South Korea",
+      "start_date": "Jun 2018",
+      "end_date": "Jan 2021"
+    },
+    {
+      "company": "Omnious Co., Ltd.",
+      "role": "Software Architect",
+      "location": "Seoul, South Korea",
+      "start_date": "Jun 2017",
+      "end_date": "May 2018"
+    },
+    {
+      "company": "PLAT Corp.",
+      "role": "Co-founder & Software Engineer",
+      "location": "Seoul, South Korea",
+      "start_date": "Jan 2016",
+      "end_date": "Jun 2017"
+    },
+    {
+      "company": "R.O.K Cyber Command",
+      "role": "Software Engineer & Security Researcher",
+      "location": "Seoul, South Korea",
+      "start_date": "Aug 2014",
+      "end_date": "Apr 2016"
+    },
+    {
+      "company": "ShitOne Corp.",
+      "role": "Software Engineer",
+      "location": "Seoul, South Korea",
+      "start_date": "Dec 2011",
+      "end_date": "Feb 2012"
+    }
+  ],
+
+  "projects": [
+    "AWS multi-account infrastructure automation",
+    "Enterprise service mesh evaluation and implementation",
+    "Terraform module ecosystem",
+    "GitOps infrastructure deployment",
+    "AWS Route53 DNS Firewall architecture",
+    "Kubernetes migration from DC/OS",
+    "Observability platform using ELK Stack",
+    "Monitoring platform using Grafana and InfluxDB",
+    "Machine Learning Fashion Tagging API SaaS",
+    "Containerized CI/CD platform",
+    "CARPLAT rental booking platform"
+  ],
+
+  "certifications": [
+    "AWS Certified Advanced Networking – Specialty",
+    "AWS Certified Security – Specialty",
+    "AWS Certified Solutions Architect – Professional",
+    "AWS Certified SysOps Administrator – Associate",
+    "Certified Kubernetes Application Developer (CKAD)",
+    "HashiCorp Certified: Terraform Authoring and Operations Professional",
+    "HashiCorp Certified: Terraform Associate (003)",
+    "HashiCorp Certified: Consul Associate (003)",
+    "HashiCorp Certified: Vault Associate (003)"
+  ],
+
+  "achievements": [
+    "2nd Place - AWS ASEAN AI/ML GameDay 2021",
+    "2nd Place - AWS Korea GameDay 2021",
+    "DEFCON CTF World Finalist (2011, 2013, 2014, 2017, 2018, 2020)",
+    "Silver Prize - KISA HDCON 2017",
+    "Silver Prize - KISA HDCON 2013",
+    "3rd Place - WITHCON Hacking Competition 2015",
+    "AWS Community Builder",
+    "HashiCorp Ambassador",
+    "Organizer - HashiCorp Korea User Group"
+  ],
+
+  "languages": [
+    "English",
+    "Korean"
+  ],
+
+  "years_of_experience": 15
+}
