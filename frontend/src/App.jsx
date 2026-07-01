@@ -455,12 +455,18 @@ const App = () => {
                     <h3 className={`text-sm font-semibold uppercase tracking-[0.24em] ${isDarkMode ? 'text-gray-500' : 'text-slate-500'}`}>Upload profile</h3>
                     <span className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-slate-500'}`}>PDF</span>
                   </div>
-                  <div className={`mt-4 rounded-[12px] border p-6 text-center transition hover:border-orange-500/20 ${isDarkMode ? 'border-white/[0.03] bg-[#0f1319]' : 'border-slate-200 bg-slate-50'}`}>
-                    <input type="file" accept=".pdf" className="absolute inset-0 cursor-pointer opacity-0" onChange={handleFileUpload} disabled={isUploading} />
+                  <label className={`relative mt-4 block cursor-pointer rounded-[12px] border p-6 text-center transition hover:border-orange-500/20 ${isDarkMode ? 'border-white/[0.03] bg-[#0f1319]' : 'border-slate-200 bg-slate-50'}`}>
+                    <input
+                      type="file"
+                      accept=".pdf"
+                      className="sr-only"
+                      onChange={handleFileUpload}
+                      disabled={isUploading}
+                    />
                     <FileText className="mx-auto h-8 w-8 text-gray-600" />
                     <p className={`mt-3 text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-slate-700'}`}>Drop a CV or candidate profile</p>
                     <p className={`mt-1 text-xs leading-6 ${isDarkMode ? 'text-gray-500' : 'text-slate-500'}`}>Resume parsing with memory graph context</p>
-                  </div>
+                  </label>
 
                   {isUploading && (
                     <div className="mt-4 space-y-2">
