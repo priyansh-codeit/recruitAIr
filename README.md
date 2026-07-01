@@ -2,6 +2,8 @@
 
 **RecruitAIr** is an AI-powered recruiter assistant built for the **Cognee Hackathon**.
 
+Live website: https://priyansh-codeit.github.io/recruitAIr
+
 Unlike traditional Applicant Tracking Systems (ATS), RecruitAIr doesn't just filter resumes using keywords—it builds persistent memory of candidates and recruiter preferences using **Cognee**. Over time, it learns how recruiters make hiring decisions and provides increasingly personalized candidate recommendations.
 
 ---

@@ -4,7 +4,12 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from .schemas import UploadResponse, SearchRequest, SearchResponse, CandidateNode
-from .utils import extract_text_from_pdf, build_candidate_summary, UPLOAD_DIR
+from .utils import (
+    extract_text_from_pdf,
+    build_candidate_summary,
+    store_candidate_memory,
+    UPLOAD_DIR,
+)
 
 load_dotenv()
 
@@ -42,18 +47,23 @@ async def upload_resume(file: UploadFile = File(...)):
     text = extract_text_from_pdf(file_path)
     summary = build_candidate_summary(text)
 
-    candidate = CandidateNode(
-        id=file_id,
-        name='Unknown Candidate',
-        role='Parsed Resume',
-        skills=['Parsed', 'Resume'],
-        summary=summary,
-        match_score=75,
-        reasoning='Extracted resume text and stored candidate context. Cognee integration pending.',
-        matched_nodes=['Resume_Text', 'Parsed_Skills'],
-    )
+    candidate_data = {
+        'id': file_id,
+        'name': 'Unknown Candidate',
+        'role': 'Parsed Resume',
+        'skills': ['Parsed', 'Resume'],
+        'summary': summary,
+        'match_score': 75,
+        'reasoning': 'Extracted resume text and stored candidate context.',
+        'matched_nodes': ['Resume_Text', 'Parsed_Skills'],
+    }
 
+    candidate = CandidateNode(**candidate_data)
     MOCK_CANDIDATES.append(candidate)
+
+    memory_saved = store_candidate_memory(candidate_data)
+    if not memory_saved:
+        candidate.reasoning += ' Cognee storage failed or is not configured.'
 
     return UploadResponse(success=True, message='Resume uploaded successfully.', candidate=candidate)
 
