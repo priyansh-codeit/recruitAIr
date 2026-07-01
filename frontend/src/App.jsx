@@ -68,6 +68,7 @@ const App = () => {
     { id: 1, from: 'bot', text: 'Hi — I can summarize a candidate, explain a match, or highlight the strongest profile in your shortlist.' },
   ]);
   const [messageInput, setMessageInput] = useState('');
+  const [selectedCandidateId, setSelectedCandidateId] = useState(candidates[0]?.id || null);
 
   const getDynamicMatchScore = (candidate) => {
     const text = `${candidate.summary} ${candidate.role} ${candidate.skills.join(' ')}`.toLowerCase();
@@ -227,6 +228,32 @@ const App = () => {
     { label: 'Personality Trait Analysis', tab: 'graph', query: 'personality' },
     { label: 'Graph of fx=x^2-5x+6', tab: 'graph', query: 'graph' },
   ];
+
+  const selectCandidate = (id) => {
+    setSelectedCandidateId(id);
+  };
+
+  const selectedCandidate = useMemo(() => rankedCandidates.find((c) => c.id === selectedCandidateId) || rankedCandidates[0] || null, [rankedCandidates, selectedCandidateId]);
+
+  const candidateHistory = useMemo(() => {
+    if (!selectedCandidate) return [];
+    const history = [];
+    // Upload / created
+    history.push({ time: selectedCandidate.last_interacted || 'N/A', type: 'profile', text: `Profile added: ${selectedCandidate.name}` });
+    // system reasoning
+    history.push({ time: 'system', type: 'reasoning', text: selectedCandidate.reasoning });
+    // matched nodes
+    selectedCandidate.matched_nodes?.forEach((node, idx) => {
+      history.push({ time: `node-${idx}`, type: 'matched_node', text: `Matched node: ${node}` });
+    });
+    // messages referencing name
+    messages.forEach((m) => {
+      if (m.text && m.text.toLowerCase().includes((selectedCandidate.name || '').toLowerCase())) {
+        history.push({ time: m.id, type: m.from === 'bot' ? 'assistant' : 'user', text: m.text });
+      }
+    });
+    return history;
+  }, [selectedCandidate, messages]);
 
   return (
     <div className={`min-h-screen antialiased selection:bg-orange-500/20 selection:text-orange-100 ${isDarkMode ? 'bg-[#05070b] text-gray-200' : 'bg-[#f4f7fb] text-slate-800'}`}>
@@ -622,6 +649,90 @@ const App = () => {
                 </div>
               </section>
             )}
+
+            {/* Candidates + Structured History panels */}
+            <section className="grid gap-8 lg:grid-cols-3">
+              <div className={`rounded-[12px] p-6 ${isDarkMode ? 'bg-[#0f1319]' : 'bg-white'}`}> 
+                <h5 className={`text-sm font-semibold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Candidates</h5>
+                <div className="mt-4 space-y-3">
+                  {rankedCandidates.map((c) => (
+                    <button
+                      key={c.id}
+                      onClick={() => selectCandidate(c.id)}
+                      className={`w-full text-left rounded-[10px] px-3 py-3 flex items-center justify-between ${selectedCandidateId === c.id ? 'ring-1 ring-orange-500 bg-orange-500/5' : isDarkMode ? 'bg-[#0d1116] hover:bg-[#11151c]' : 'bg-slate-50 hover:bg-slate-100'}`}
+                    >
+                      <div>
+                        <div className={`font-medium ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{c.name}</div>
+                        <div className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-slate-500'}`}>{c.role} • {c.last_interacted}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-lg font-semibold text-orange-500">{c.match_score}%</div>
+                        <div className="text-[10px] text-gray-400">match</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className={`rounded-[12px] p-6 ${isDarkMode ? 'bg-[#0f1319]' : 'bg-white'}`}> 
+                <h5 className={`text-sm font-semibold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Candidate details</h5>
+                {!selectedCandidate ? (
+                  <div className={`mt-4 text-sm ${isDarkMode ? 'text-gray-400' : 'text-slate-600'}`}>No candidate selected</div>
+                ) : (
+                  <div className="mt-4 space-y-4">
+                    <div className="flex items-start gap-4">
+                      <div className="h-14 w-14 rounded-full bg-white/5 flex items-center justify-center text-xl font-semibold text-white">{(selectedCandidate.name || '').split(' ').map(s=>s[0]).join('').slice(0,2)}</div>
+                      <div className="flex-1">
+                        <div className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{selectedCandidate.name}</div>
+                        <div className={`text-sm text-orange-500`}>{selectedCandidate.role}</div>
+                        <div className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-slate-500'}`}>Last interacted: {selectedCandidate.last_interacted}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-orange-500">{selectedCandidate.match_score}%</div>
+                        <div className="text-xs text-gray-400">Match score</div>
+                      </div>
+                    </div>
+
+                    <div className={`rounded-[10px] p-4 ${isDarkMode ? 'bg-[#0b0f14]' : 'bg-slate-50'}`}>
+                      <div className={`text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-slate-700'}`}>Summary</div>
+                      <div className={`mt-2 text-sm ${isDarkMode ? 'text-gray-400' : 'text-slate-600'}`}>{selectedCandidate.summary}</div>
+                    </div>
+
+                    <div className={`rounded-[10px] p-4 ${isDarkMode ? 'bg-[#0b0f14]' : 'bg-slate-50'}`}>
+                      <div className={`text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-slate-700'}`}>System reasoning</div>
+                      <div className={`mt-2 text-sm ${isDarkMode ? 'text-gray-400' : 'text-slate-600'}`}>{selectedCandidate.reasoning}</div>
+                    </div>
+
+                    <div>
+                      <div className={`text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-slate-700'}`}>Skills & matched nodes</div>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {selectedCandidate.skills?.map((s) => (
+                          <span key={s} className={`rounded-full px-3 py-1 text-[11px] ${isDarkMode ? 'bg-white/[0.04] text-gray-300' : 'bg-slate-100 text-slate-700'}`}>{s}</span>
+                        ))}
+                        {selectedCandidate.matched_nodes?.map((n) => (
+                          <span key={n} className="rounded-full px-2 py-1 text-[11px] bg-orange-500/10 text-orange-300">{n}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className={`rounded-[12px] p-6 ${isDarkMode ? 'bg-[#0f1319]' : 'bg-white'}`}> 
+                <h5 className={`text-sm font-semibold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Structured history</h5>
+                <div className="mt-4 space-y-3">
+                  {candidateHistory.length === 0 && <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-slate-600'}`}>No history yet</div>}
+                  {candidateHistory.map((h, i) => (
+                    <div key={i} className={`rounded-[8px] p-3 ${isDarkMode ? 'bg-[#0b0f14]' : 'bg-slate-50'}`}>
+                      <div className="flex items-center justify-between">
+                        <div className={`text-sm ${isDarkMode ? 'text-gray-200' : 'text-slate-800'}`}>{h.text}</div>
+                        <div className={`text-[11px] ${isDarkMode ? 'text-gray-500' : 'text-slate-500'}`}>{h.time}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
 
             <div>
               <button
