@@ -3,6 +3,8 @@ import uuid
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+from app.cognee.interaction import remember_interaction
+from app.cognee.recall import search_candidates as cognee_search_candidates
 from .schemas import UploadResponse, SearchRequest, SearchResponse, CandidateNode
 from .utils import (
     extract_text_from_pdf,
@@ -61,7 +63,7 @@ async def upload_resume(file: UploadFile = File(...)):
     candidate = CandidateNode(**candidate_data)
     MOCK_CANDIDATES.append(candidate)
 
-    memory_saved = store_candidate_memory(candidate_data)
+    memory_saved = await store_candidate_memory(candidate_data)
     if not memory_saved:
         candidate.reasoning += ' Cognee storage failed or is not configured.'
 
@@ -69,11 +71,29 @@ async def upload_resume(file: UploadFile = File(...)):
 
 @app.post('/search', response_model=SearchResponse)
 async def search_candidates(request: SearchRequest):
+    try:
+        cognee_results = await cognee_search_candidates(request.query)
+
+        # For now, return Cognee's raw results if available.
+        # We'll map them to CandidateNode objects later.
+        if cognee_results:
+            return {
+                "success": True,
+                "results": cognee_results,
+            }
+    except Exception as e:
+        print(f"Cognee search failed: {e}")
+
+    # Fallback to existing mock search
     query = request.query.lower()
     results = []
 
     for candidate in MOCK_CANDIDATES:
-        if query in candidate.summary.lower() or query in candidate.role.lower() or any(query in skill.lower() for skill in candidate.skills):
+        if (
+            query in candidate.summary.lower()
+            or query in candidate.role.lower()
+            or any(query in skill.lower() for skill in candidate.skills)
+        ):
             results.append(candidate)
 
     return SearchResponse(success=True, results=results)
@@ -81,3 +101,20 @@ async def search_candidates(request: SearchRequest):
 @app.get('/candidates', response_model=SearchResponse)
 async def list_candidates():
     return SearchResponse(success=True, results=MOCK_CANDIDATES)
+
+@app.post("/feedback")
+async def feedback(
+    candidate_id: str,
+    action: str,
+    recruiter_id: str = "default",
+):
+    await remember_interaction(
+        candidate_id=candidate_id,
+        action=action,
+        recruiter_id=recruiter_id,
+    )
+
+    return {
+        "success": True,
+        "message": f"Recorded '{action}' for candidate {candidate_id}",
+    }

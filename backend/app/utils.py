@@ -2,6 +2,7 @@ import os
 import fitz
 import requests
 from dotenv import load_dotenv
+from app.cognee.remember import remember_resume
 
 load_dotenv()
 
@@ -37,29 +38,14 @@ def _send_candidate_to_cognee(url: str, payload: dict, headers: dict) -> bool:
         return False
 
 
-def store_candidate_memory(candidate: dict) -> bool:
-    if not COGNEE_API_KEY or not COGNEE_ENDPOINT:
+async def store_candidate_memory(candidate: dict) -> bool:
+    try:
+        await remember_resume(
+            candidate_id=candidate["id"],
+            resume_text=candidate["summary"],
+        )
+        return True
+    except Exception as e:
+        print(f"Cognee error: {e}")
         return False
-
-    headers = {
-        'Authorization': f'Bearer {COGNEE_API_KEY}',
-        'Content-Type': 'application/json',
-    }
-
-    payload = {
-        'candidate': candidate,
-        'metadata': {
-            'source': 'RecruitAIr',
-            'candidate_id': candidate.get('id'),
-        },
-    }
-
-    endpoint_paths = ['memory', 'v1/memory', 'records', 'v1/records']
-    base_url = COGNEE_ENDPOINT.rstrip('/')
-
-    for path in endpoint_paths:
-        url = f"{base_url}/{path}"
-        if _send_candidate_to_cognee(url, payload, headers):
-            return True
-
-    return False
+   
