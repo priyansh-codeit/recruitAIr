@@ -20,7 +20,7 @@ def save_candidate(candidate: Candidate) -> None:
     _candidates[candidate.id] = candidate
 
 
-def get_candidate(candidate_id: str) -> Optional[Candidate]:
+def get_candidate(candidate_id: str):
     return _candidates.get(candidate_id)
 
 
