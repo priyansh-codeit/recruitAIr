@@ -5,6 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from app.cognee.interaction import remember_interaction
 from app.cognee.recall import search_candidates as cognee_search_candidates
+from app.cognee.improve import improve_memory
+from app.cognee.forget import delete_all_candidates
 from .schemas import UploadResponse, SearchRequest, SearchResponse, CandidateNode
 from .utils import (
     extract_text_from_pdf,
@@ -77,10 +79,26 @@ async def search_candidates(request: SearchRequest):
         # For now, return Cognee's raw results if available.
         # We'll map them to CandidateNode objects later.
         if cognee_results:
-            return {
-                "success": True,
-                "results": cognee_results,
-            }
+            formatted_results = []
+
+            for i, result in enumerate(cognee_results):
+                formatted_results.append(
+                CandidateNode(
+                    id=f"cognee-{i}",
+                    name="Cognee Match",
+                    role="Retrieved Memory",
+                    skills=[],
+                    summary=result.text,
+                    match_score=100,
+                    reasoning="Retrieved from Cognee memory.",
+                    matched_nodes=[result.source],
+                )
+            )
+
+            return SearchResponse(
+            success=True,
+            results=formatted_results,
+        )
     except Exception as e:
         print(f"Cognee search failed: {e}")
 
@@ -117,4 +135,20 @@ async def feedback(
     return {
         "success": True,
         "message": f"Recorded '{action}' for candidate {candidate_id}",
+    }
+@app.post("/improve")
+async def improve():
+    await improve_memory()
+
+    return {
+        "success": True,
+        "message": "Cognee memory improved successfully.",
+    }
+@app.post("/forget")
+async def forget():
+    await delete_all_candidates()
+
+    return {
+        "success": True,
+        "message": "All candidate memories deleted successfully.",
     }
